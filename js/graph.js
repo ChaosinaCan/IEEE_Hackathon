@@ -66,10 +66,33 @@
       this.getSimilar = __bind(this.getSimilar, this);
 
       this.checkGrooveShark = __bind(this.checkGrooveShark, this);
+
+      this.checkLastFM = __bind(this.checkLastFM, this);
       this.title = title;
       this.artist = artist;
       this.album = null;
     }
+
+    SongData.prototype.checkLastFM = function(callback) {
+      var _this = this;
+      return lastfm.track.getInfo({
+        track: this.title,
+        artist: this.artist,
+        autocorrect: 1
+      }, {
+        success: function(data) {
+          console.log(data);
+          _this.mbid = data.track.mbid;
+          _this.title = data.track.name;
+          _this.artist = data.track.artist.name;
+          _this.album = data.track.album.title;
+          return typeof callback === "function" ? callback(_this) : void 0;
+        },
+        error: function(code, message) {
+          return typeof callback === "function" ? callback(_this) : void 0;
+        }
+      });
+    };
 
     SongData.prototype.checkGrooveShark = function(callback) {
       var _this = this;
@@ -139,7 +162,7 @@
                       return __slot_1[__slot_2] = arguments[0];
                     };
                   })(items, i),
-                  lineno: 53
+                  lineno: 70
                 }));
                 __iced_deferrals._fulfill();
               })(_next);
@@ -165,6 +188,8 @@
 
     SongNode.prototype.song = null;
 
+    SongNode.prototype.expanded = false;
+
     SongNode.prototype.similar = [];
 
     function SongNode(songdata, parent) {
@@ -178,38 +203,42 @@
         _this = this;
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
-      items = [];
       (function(__iced_k) {
-        __iced_deferrals = new iced.Deferrals(__iced_k, {
-          parent: ___iced_passed_deferral,
-          funcname: "SongNode.expand"
-        });
-        _this.song.getSimilar(__iced_deferrals.defer({
-          assign_fn: (function() {
-            return function() {
-              return items = arguments[0];
-            };
-          })(),
-          lineno: 68
-        }));
-        __iced_deferrals._fulfill();
-      })(function() {
-        _this.similar = (function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = items.length; _i < _len; _i++) {
-            item = items[_i];
-            _results.push(new SongNode(item, this));
-          }
-          return _results;
-        }).call(_this);
-        if (_this.parent != null) {
-          console.log('filtering');
-          self = _this;
-          _this.similar = _this.similar.filter(function(item) {
-            return item.song.mbid !== self.parent.song.mbid;
+        if (!_this.expanded) {
+          items = [];
+          (function(__iced_k) {
+            __iced_deferrals = new iced.Deferrals(__iced_k, {
+              parent: ___iced_passed_deferral,
+              funcname: "SongNode.expand"
+            });
+            _this.song.getSimilar(__iced_deferrals.defer({
+              assign_fn: (function() {
+                return function() {
+                  return items = arguments[0];
+                };
+              })(),
+              lineno: 87
+            }));
+            __iced_deferrals._fulfill();
+          })(function() {
+            _this.similar = (function() {
+              var _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = items.length; _i < _len; _i++) {
+                item = items[_i];
+                _results.push(new SongNode(item, this));
+              }
+              return _results;
+            }).call(_this);
+            return __iced_k(_this.parent != null ? (self = _this, _this.similar = _this.similar.filter(function(item) {
+              return item.song.mbid !== self.parent.song.mbid;
+            })) : void 0);
           });
+        } else {
+          return __iced_k();
         }
+      })(function() {
+        _this.expanded = true;
         return typeof callback === "function" ? callback(_this) : void 0;
       });
     };

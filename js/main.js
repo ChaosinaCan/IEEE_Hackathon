@@ -31,7 +31,7 @@
 
   root.TrackFinder = (function() {
 
-    TrackFinder.defaultLimit = 5;
+    TrackFinder.defaultLimit = 4;
 
     TrackFinder.prototype.limit = null;
 
@@ -93,5 +93,43 @@
     return TrackFinder;
 
   })();
+
+  $(function() {
+    var insertSongNode, rootlist;
+    rootlist = $('<ul>');
+    $(document.body).append(rootlist);
+    insertSongNode = function(node, list) {
+      var item;
+      item = $('<li>');
+      item.append($('<a href="#">').text("" + node.song.title + " - " + node.song.artist).attr('title', node.song.mbid).click(function() {
+        if (node.expanded) {
+          return;
+        }
+        return node.expand(function(expanded) {
+          var similar, _i, _len, _ref, _results;
+          if (expanded.similar.length === 0) {
+            $(item).children('ul').append($('<li>').text('No similar songs'));
+          }
+          _ref = expanded.similar;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            similar = _ref[_i];
+            _results.push(insertSongNode(similar, $(item).children('ul')));
+          }
+          return _results;
+        });
+      }));
+      if (node.song.gs.url != null) {
+        item.append(' - ');
+        item.append($('<a target=_blank>').attr('href', node.song.gs.url).text('Play'));
+      }
+      item.append($('<ul>'));
+      list.append(item);
+      return item;
+    };
+    root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'));
+    rootnode.song.checkLastFM();
+    return insertSongNode(rootnode, rootlist);
+  });
 
 }).call(this);

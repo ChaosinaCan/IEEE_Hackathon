@@ -21,6 +21,23 @@ class root.SongData
 		this.artist = artist
 		this.album = null
 		
+	checkLastFM: (callback) =>
+		lastfm.track.getInfo
+			track: this.title
+			artist: this.artist
+			autocorrect: 1
+		,
+			success: (data) =>
+				console.log data
+				this.mbid = data.track.mbid
+				this.title = data.track.name
+				this.artist = data.track.artist.name
+				this.album = data.track.album.title
+				callback?(this)
+			error: (code, message) =>
+				callback?(this)
+
+
 	checkGrooveShark: (callback) =>
 		gs.search this.title, this.artist, (data) =>
 			this.loaded = true
@@ -57,6 +74,7 @@ class root.SongData
 class root.SongNode
 	parent: null
 	song: null
+	expanded: false
 	similar: []
 
 	constructor: (songdata, parent) ->
@@ -64,16 +82,17 @@ class root.SongNode
 		this.parent = parent ? null
 
 	expand: (callback) =>
-		items = []
-		await this.song.getSimilar defer items
-		this.similar = (new SongNode(item, this) for item in items)
+		if not this.expanded
+			items = []
+			await this.song.getSimilar defer items
+			this.similar = (new SongNode(item, this) for item in items)
 		
-		# filter out items that are the same as this node's parent so
-		# we don't toggle between two similar songs indefinitely
-		if this.parent?
-			console.log 'filtering'
-			self = this
-			this.similar = this.similar.filter (item) ->
-				return item.song.mbid != self.parent.song.mbid
+			# filter out items that are the same as this node's parent so
+			# we don't toggle between two similar songs indefinitely
+			if this.parent?
+				self = this
+				this.similar = this.similar.filter (item) ->
+					return item.song.mbid != self.parent.song.mbid
 
+		this.expanded = true
 		callback?(this)

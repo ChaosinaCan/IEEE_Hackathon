@@ -25,7 +25,7 @@ root.lastfm.error =
 
 
 class root.TrackFinder
-	@defaultLimit: 5
+	@defaultLimit: 4
 	limit: null
 		
 	constructor: (limit) ->
@@ -71,5 +71,41 @@ class root.TrackFinder
 
 
 
+
+		
+$ ->
+	rootlist = $('<ul>')
+	$(document.body).append(rootlist)
+
+	# I have no idea what this does any more
+	insertSongNode = (node, list) ->
+		item = $('<li>')
+		item.append(
+			$('<a href="#">').text("#{node.song.title} - #{node.song.artist}")
+				.attr('title', node.song.mbid)
+				.click( ->
+					if node.expanded
+						return
+					node.expand (expanded) ->
+						if expanded.similar.length == 0
+							$(item).children('ul').append($('<li>').text('No similar songs'))
+						for similar in expanded.similar
+							insertSongNode(similar, $(item).children('ul'))	
+				)
+		)
+		if node.song.gs.url?
+			item.append(' - ')
+			item.append(
+				$('<a target=_blank>').attr('href', node.song.gs.url).text('Play')	
+			)
+		item.append($('<ul>'))
+		list.append(item)
+		return item
+
+	root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'))
+	rootnode.song.checkLastFM()
+	insertSongNode(rootnode, rootlist)
+
+		
 
 		
