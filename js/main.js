@@ -1,6 +1,44 @@
 (function() {
-  var root,
+  var iced, root, __iced_k, __iced_k_noop,
+    __slice = [].slice,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  iced = {
+    Deferrals: (function() {
+
+      function _Class(_arg) {
+        this.continuation = _arg;
+        this.count = 1;
+        this.ret = null;
+      }
+
+      _Class.prototype._fulfill = function() {
+        if (!--this.count) return this.continuation(this.ret);
+      };
+
+      _Class.prototype.defer = function(defer_params) {
+        var _this = this;
+        ++this.count;
+        return function() {
+          var inner_params, _ref;
+          inner_params = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+          if (defer_params != null) {
+            if ((_ref = defer_params.assign_fn) != null) {
+              _ref.apply(null, inner_params);
+            }
+          }
+          return _this._fulfill();
+        };
+      };
+
+      return _Class;
+
+    })(),
+    findDeferral: function() {
+      return null;
+    }
+  };
+  __iced_k = __iced_k_noop = function() {};
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -29,6 +67,82 @@
     serverError: 16,
     suspendedKey: 26,
     rateLimitExceeded: 29
+  };
+
+  root.lastfm.search = function(title, artist, callback) {
+    var query;
+    query = {
+      track: title,
+      limit: 10
+    };
+    if ((artist != null) && artist !== '') query.artist = artist;
+    return lastfm.track.search(query, {
+      success: function(data) {
+        var i, results, tempresults, track, ___iced_passed_deferral, __iced_deferrals, __iced_k,
+          _this = this;
+        __iced_k = __iced_k_noop;
+        ___iced_passed_deferral = iced.findDeferral(arguments);
+        tempresults = (function() {
+          var _i, _len, _ref, _results;
+          _ref = data.results.trackmatches.track;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            track = _ref[_i];
+            _results.push(SongData.fromLastFM(track));
+          }
+          return _results;
+        })();
+        results = [];
+        (function(__iced_k) {
+          var _i, _len, _ref, _results, _while;
+          _ref = tempresults;
+          _len = _ref.length;
+          i = 0;
+          _results = [];
+          _while = function(__iced_k) {
+            var _break, _continue, _next;
+            _break = function() {
+              return __iced_k(_results);
+            };
+            _continue = function() {
+              ++i;
+              return _while(__iced_k);
+            };
+            _next = function(__iced_next_arg) {
+              _results.push(__iced_next_arg);
+              return _continue();
+            };
+            if (!(i < _len)) {
+              return _break();
+            } else {
+              track = _ref[i];
+              (function(__iced_k) {
+                __iced_deferrals = new iced.Deferrals(__iced_k, {
+                  parent: ___iced_passed_deferral,
+                  funcname: "success"
+                });
+                track.checkGrooveShark(__iced_deferrals.defer({
+                  assign_fn: (function(__slot_1, __slot_2) {
+                    return function() {
+                      return __slot_1[__slot_2] = arguments[0];
+                    };
+                  })(results, i),
+                  lineno: 42
+                }));
+                __iced_deferrals._fulfill();
+              })(_next);
+            }
+          };
+          _while(__iced_k);
+        })(function() {
+          return typeof callback === "function" ? callback(results) : void 0;
+        });
+      },
+      error: function(code, message) {
+        console.log(code, message);
+        return typeof callback === "function" ? callback([]) : void 0;
+      }
+    });
   };
 
   root.TrackFinder = (function() {
@@ -97,29 +211,37 @@
   })();
 
   $(function() {
-    var insertSongNode, rootlist;
+    var doExpand, insertSongNode, rootlist, unused, ___iced_passed_deferral, __iced_deferrals, __iced_k,
+      _this = this;
+    __iced_k = __iced_k_noop;
+    ___iced_passed_deferral = iced.findDeferral(arguments);
     rootlist = $('<ul>');
     $('#content').append(rootlist);
+    doExpand = function(node, li) {
+      if (node._clicked != null) return;
+      node._clicked = true;
+      li.addClass('working');
+      return node.expand(function(expanded) {
+        var child, _i, _len, _ref, _results;
+        li.removeClass('working');
+        if (expanded.children.length === 0) {
+          $(li).children('ul').append($('<li>').text('No similar songs found'));
+        }
+        _ref = expanded.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(insertSongNode(child, $(li).children('ul')));
+        }
+        return _results;
+      });
+    };
     insertSongNode = function(node, list) {
       var item;
       item = $('<li>');
       item.append($('<a href="javascript:;">').text("" + node.song.title + " - " + node.song.artist).attr('title', node.song.mbid).click(function() {
-        if (node.expanded) {
-          return;
-        }
-        return node.expand(function(expanded) {
-          var child, _i, _len, _ref, _results;
-          if (expanded.children.length === 0) {
-            $(item).children('ul').append($('<li>').text('No similar songs'));
-          }
-          _ref = expanded.children;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            child = _ref[_i];
-            _results.push(insertSongNode(child, $(item).children('ul')));
-          }
-          return _results;
-        });
+        $(this).removeAttr('href');
+        return doExpand(node, item);
       }));
       if (node.song.gs.url != null) {
         item.append(' - ');
@@ -133,8 +255,37 @@
       return item;
     };
     root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'));
-    rootnode.song.checkLastFM();
-    return insertSongNode(rootnode, rootlist);
+    (function(__iced_k) {
+      __iced_deferrals = new iced.Deferrals(__iced_k, {
+        parent: ___iced_passed_deferral
+      });
+      rootnode.song.checkGrooveShark(__iced_deferrals.defer({
+        assign_fn: (function() {
+          return function() {
+            return unused = arguments[0];
+          };
+        })(),
+        lineno: 142
+      }));
+      __iced_deferrals._fulfill();
+    })(function() {
+      (function(__iced_k) {
+        __iced_deferrals = new iced.Deferrals(__iced_k, {
+          parent: ___iced_passed_deferral
+        });
+        rootnode.song.checkLastFM(__iced_deferrals.defer({
+          assign_fn: (function() {
+            return function() {
+              return unused = arguments[0];
+            };
+          })(),
+          lineno: 143
+        }));
+        __iced_deferrals._fulfill();
+      })(function() {
+        return insertSongNode(rootnode, rootlist);
+      });
+    });
   });
 
 }).call(this);
