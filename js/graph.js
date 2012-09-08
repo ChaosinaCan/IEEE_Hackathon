@@ -185,6 +185,8 @@
 
   root.SongNode = (function() {
 
+    SongNode.maxChildren = 4;
+
     SongNode.prototype.parent = null;
 
     SongNode.prototype.song = null;
@@ -218,7 +220,7 @@
                   return items = arguments[0];
                 };
               })(),
-              lineno: 87
+              lineno: 89
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -231,9 +233,13 @@
               }
               return _results;
             }).call(_this);
-            return __iced_k(_this.parent != null ? (self = _this, _this.children = _this.children.filter(function(item) {
-              return item.song.mbid !== self.parent.song.mbid;
-            })) : void 0);
+            if (_this.parent != null) {
+              self = _this;
+              _this.children = _this.children.filter(function(item) {
+                return item.song.mbid !== self.parent.song.mbid;
+              });
+            }
+            return __iced_k(_this.children = _this.children.slice(0, SongNode.maxChildren));
           });
         } else {
           return __iced_k();

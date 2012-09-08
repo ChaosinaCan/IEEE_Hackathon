@@ -11,7 +11,6 @@ class root.GrooveShark
 
 	query: (query, callback, errback) ->
 		url = encodeURI(GrooveShark.endpoint + "?query=#{query}")
-		#console.log url
 		$.getJSON(url).then callback, errback
 
 	search: (title, artist, callback, errback) =>

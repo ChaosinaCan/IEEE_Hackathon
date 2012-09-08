@@ -26,7 +26,7 @@ root.lastfm.error =
 
 
 class root.TrackFinder
-	@defaultLimit: 4
+	@defaultLimit: 7
 	limit: null
 		
 	constructor: (limit) ->

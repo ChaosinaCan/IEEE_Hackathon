@@ -33,7 +33,7 @@
 
   root.TrackFinder = (function() {
 
-    TrackFinder.defaultLimit = 4;
+    TrackFinder.defaultLimit = 7;
 
     TrackFinder.prototype.limit = null;
 

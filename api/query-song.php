@@ -12,7 +12,7 @@
 	            ->single_tinysong_metadata($query)
 	            ->execute();
 	
-	if ($result == [])
+	if (empty($result))
 		echo 'null';
 	else
 		echo json_encode($result);

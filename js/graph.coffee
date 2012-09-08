@@ -72,6 +72,8 @@ class root.SongData
 			callback?(items)
 
 class root.SongNode
+	@maxChildren: 4
+
 	parent: null
 	song: null
 	expanded: false
@@ -93,6 +95,9 @@ class root.SongNode
 				self = this
 				this.children = this.children.filter (item) ->
 					return item.song.mbid != self.parent.song.mbid
+
+			# grab the first few results
+			this.children = this.children.slice(0, SongNode.maxChildren)
 
 		this.expanded = true
 		callback?(this)
