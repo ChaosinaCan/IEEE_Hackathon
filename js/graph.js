@@ -58,6 +58,13 @@
 
     SongData.prototype.error = false;
 
+    SongData.fromLastFM = function(data) {
+      var songdata;
+      songdata = new SongData(data.name, data.artist);
+      songdata.mbid = data.mbid;
+      return songdata;
+    };
+
     function SongData(title, artist) {
       this.getSimilar = __bind(this.getSimilar, this);
 
@@ -163,7 +170,7 @@
                       return __slot_1[__slot_2] = arguments[0];
                     };
                   })(items, i),
-                  lineno: 70
+                  lineno: 75
                 }));
                 __iced_deferrals._fulfill();
               })(_next);
@@ -220,7 +227,7 @@
                   return items = arguments[0];
                 };
               })(),
-              lineno: 89
+              lineno: 94
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -236,7 +243,7 @@
             if (_this.parent != null) {
               self = _this;
               _this.children = _this.children.filter(function(item) {
-                return item.song.mbid !== self.parent.song.mbid;
+                return item.song.mbid !== self.parent.song.mbid || (item.song.mbid === '' && self.parent.song.mbid === '');
               });
             }
             return __iced_k(_this.children = _this.children.slice(0, SongNode.maxChildren));

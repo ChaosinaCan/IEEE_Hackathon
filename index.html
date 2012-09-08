@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="css/style.css">
 
 	<script src="js/jquery.js"></script>
+	<script src="js/prefixfree.js"></script>
 	<script src="js/lastfm/lastfm.api.md5.js"></script>
 	<script src="js/lastfm/lastfm.api.js"></script>
 	<script src="js/gs/grooveshark.js"></script>
@@ -15,22 +16,21 @@
 </head>
 <body>
 
-	<div class="header">
-		<center><h1>Song Tree // Music Discovery with a Choice</h1></center>
-	</div>
-       
-    <div class="search"><center>
-    <form>
-	<label for="song-search-input">Search for a song:&nbsp;</label>
-	<input type="text" id="song-search-input" name="song-search-input" placeholder=" SONG">
-	<input type="text" id="artist-search-input" name="artist-search-input" placeholder=" ARTIST">
-	<input type="submit" value="Search" class="search-song">
-	</form>
-	</center></div>
-	
-	<div class="results" id="search-results"></div>
-	<div class="tree" id="content">
-
+	<header>
+		<h1 class="outline center">Song Tree // Music Discovery with a Choice</h1>
+	</header>
+      
+	<div id="content">
+		<form id="search-form" class="center">
+			<label for="search-song" class="outline">Search for a song:</label>
+			<input type="text" id="search-song" placeholder="SONG">
+			<input type="text" id="search-artist" placeholder="ARTIST">
+			<input type="submit" value="Search" id="search-submit">
+			<div class="loader"></div>
+		</form>
+		
+		<div id="search-results"></div>
+		<div id="tree"></div>
 	</div>
 
 	<footer>

@@ -1,3 +1,5 @@
+# Use Iced CoffeeScript
+
 root = exports ? this
 
 root.gs = new GrooveShark '67b088cec7b78a5b29a42a7124928c87'
@@ -23,6 +25,27 @@ root.lastfm.error =
 	serverError: 16
 	suspendedKey: 26
 	rateLimitExceeded: 29
+
+root.lastfm.search = (title, artist, callback) ->
+	query = 
+		track: title
+		limit: 10
+	if artist? and artist != ''
+		query.artist = artist
+
+	lastfm.track.search query, 
+		success: (data) ->
+			tempresults = (SongData.fromLastFM(track) for track in data.results.trackmatches.track)
+			results = []
+			for track, i in tempresults
+				await track.checkGrooveShark defer results[i]
+
+			callback?(results)
+			
+		error: (code, message) ->
+			console.log(code, message)
+			callback?([])
+
 
 
 class root.TrackFinder
@@ -70,13 +93,25 @@ class root.TrackFinder
 		return data.similartracks
 
 
-
-
-
 		
-$ ->
+beginTree = (songdata) ->
 	rootlist = $('<ul>')
-	$('#content').append(rootlist)
+	$('#tree').empty().append(rootlist)
+
+	doExpand = (node, li) -> 
+		if node._clicked?
+			return
+		
+		node._clicked = true
+		li.addClass('working')
+
+		node.expand (expanded) ->
+			li.removeClass('working')
+			if expanded.children.length == 0
+				$(li).children('ul').append($('<li>').text('No similar songs found'))
+			for child in expanded.children
+				insertSongNode(child, $(li).children('ul'))
+		
 
 	# I have no idea what this does any more
 	insertSongNode = (node, list) ->
@@ -84,14 +119,9 @@ $ ->
 		item.append(
 			$('<a href="javascript:;">').text("#{node.song.title} - #{node.song.artist}")
 				.attr('title', node.song.mbid)
-				.click( ->
-					if node.expanded
-						return
-					node.expand (expanded) ->
-						if expanded.children.length == 0
-							$(item).children('ul').append($('<li>').text('No similar songs'))
-						for child in expanded.children
-							insertSongNode(child, $(item).children('ul'))	
+				.click( -> 
+					$(this).removeAttr('href')
+					doExpand(node, item)
 				)
 		)
 		if node.song.gs.url?
@@ -108,10 +138,43 @@ $ ->
 		list.append(item)
 		return item
 
-	root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'))
-	rootnode.song.checkLastFM()
+	root.rootnode = new SongNode(songdata)
 	insertSongNode(rootnode, rootlist)
 
-		
+	doExpand(rootnode, rootlist.children('li'))
+	rootlist.children('a').removeAttr('href')
 
+
+
+$ ->
+	selectResult = (track) ->
+		beginTree(track)
+		$('#search-results').empty()
+	
+	$('#search-submit').click (e)->
+		e.preventDefault()
+		$(this).attr('disabled', true)
+		$('#search-form').addClass('working')
 		
+		await lastfm.search $('#search-song').val(), $('#search-artist').val(), defer results
+
+		container = $('#search-results').empty()
+		if results.length == 0
+			container.append($('<p>').text('No songs found'))
+		else
+			list = $('<ul>')
+			for track in results
+				do (track) ->
+					list.append(
+						$('<li>').append(
+							$('<a href="javascript:;">').text("#{track.title} - #{track.artist}")
+								.click( -> selectResult(track))
+						)
+					)
+
+			container.append(list)
+
+		$(this).removeAttr('disabled')
+		$('#search-form').removeClass('working')
+
+				

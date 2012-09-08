@@ -12,6 +12,11 @@ class root.SongData
 	loaded: false
 	error: false
 	
+	@fromLastFM: (data) ->
+		songdata = new SongData(data.name, data.artist)
+		songdata.mbid = data.mbid
+		return songdata
+
 	constructor: (title, artist) ->
 		this.title = title
 		this.artist = artist
@@ -94,7 +99,7 @@ class root.SongNode
 			if this.parent?
 				self = this
 				this.children = this.children.filter (item) ->
-					return item.song.mbid != self.parent.song.mbid
+					return item.song.mbid != self.parent.song.mbid or (item.song.mbid == '' and self.parent.song.mbid == '')
 
 			# grab the first few results
 			this.children = this.children.slice(0, SongNode.maxChildren)
