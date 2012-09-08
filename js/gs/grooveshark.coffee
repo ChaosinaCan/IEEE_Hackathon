@@ -4,6 +4,7 @@ class root.GrooveShark
 	@endpoint = 'api/query-song.php'
 
 	key = null
+	window: null
 
 	constructor: (apikey) ->
 		key = apikey
@@ -16,3 +17,10 @@ class root.GrooveShark
 	search: (title, artist, callback, errback) =>
 		this.query "#{artist} #{title}", callback, errback
 		
+	open: () ->
+		this.window = window.open('http://grooveshark.com')
+		this.window.blur()
+		window.focus()
+
+	changeSong: (url) ->
+		this.window.location.assign(url)

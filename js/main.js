@@ -6,6 +6,8 @@
 
   root.gs = new GrooveShark('67b088cec7b78a5b29a42a7124928c87');
 
+  gs.open();
+
   root.lastfm = new LastFM({
     apiKey: '6e9f1f13f07ba5bcbfb0a8951811c80e',
     apiSecret: '4db7199ede1a06b27e6fd96705ddba49'
@@ -97,31 +99,34 @@
   $(function() {
     var insertSongNode, rootlist;
     rootlist = $('<ul>');
-    $(document.body).append(rootlist);
+    $('#content').append(rootlist);
     insertSongNode = function(node, list) {
       var item;
       item = $('<li>');
-      item.append($('<a href="#">').text("" + node.song.title + " - " + node.song.artist).attr('title', node.song.mbid).click(function() {
+      item.append($('<a href="javascript:;">').text("" + node.song.title + " - " + node.song.artist).attr('title', node.song.mbid).click(function() {
         if (node.expanded) {
           return;
         }
         return node.expand(function(expanded) {
-          var similar, _i, _len, _ref, _results;
-          if (expanded.similar.length === 0) {
+          var child, _i, _len, _ref, _results;
+          if (expanded.children.length === 0) {
             $(item).children('ul').append($('<li>').text('No similar songs'));
           }
-          _ref = expanded.similar;
+          _ref = expanded.children;
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            similar = _ref[_i];
-            _results.push(insertSongNode(similar, $(item).children('ul')));
+            child = _ref[_i];
+            _results.push(insertSongNode(child, $(item).children('ul')));
           }
           return _results;
         });
       }));
       if (node.song.gs.url != null) {
         item.append(' - ');
-        item.append($('<a target=_blank>').attr('href', node.song.gs.url).text('Play'));
+        item.append($('<a>').text('Play').attr('href', node.song.gs.url).click(function(e) {
+          gs.changeSong(node.song.gs.url);
+          return e.preventDefault();
+        }));
       }
       item.append($('<ul>'));
       list.append(item);

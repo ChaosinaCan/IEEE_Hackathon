@@ -11,6 +11,8 @@
 
     key = null;
 
+    GrooveShark.prototype.window = null;
+
     function GrooveShark(apikey) {
       this.search = __bind(this.search, this);
       key = apikey;
@@ -24,6 +26,16 @@
 
     GrooveShark.prototype.search = function(title, artist, callback, errback) {
       return this.query("" + artist + " " + title, callback, errback);
+    };
+
+    GrooveShark.prototype.open = function() {
+      this.window = window.open('http://grooveshark.com');
+      this.window.blur();
+      return window.focus();
+    };
+
+    GrooveShark.prototype.changeSong = function(url) {
+      return this.window.location.assign(url);
     };
 
     return GrooveShark;

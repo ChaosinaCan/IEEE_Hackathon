@@ -52,11 +52,7 @@
 
     SongData.prototype.album = null;
 
-    SongData.prototype.gs = {
-      found: false,
-      url: null,
-      id: null
-    };
+    SongData.prototype.gs = {};
 
     SongData.prototype.loaded = false;
 
@@ -71,6 +67,11 @@
       this.title = title;
       this.artist = artist;
       this.album = null;
+      this.gs = {
+        found: false,
+        url: null,
+        id: null
+      };
     }
 
     SongData.prototype.checkLastFM = function(callback) {
@@ -190,7 +191,7 @@
 
     SongNode.prototype.expanded = false;
 
-    SongNode.prototype.similar = [];
+    SongNode.prototype.children = [];
 
     function SongNode(songdata, parent) {
       this.expand = __bind(this.expand, this);
@@ -221,7 +222,7 @@
             }));
             __iced_deferrals._fulfill();
           })(function() {
-            _this.similar = (function() {
+            _this.children = (function() {
               var _i, _len, _results;
               _results = [];
               for (_i = 0, _len = items.length; _i < _len; _i++) {
@@ -230,7 +231,7 @@
               }
               return _results;
             }).call(_this);
-            return __iced_k(_this.parent != null ? (self = _this, _this.similar = _this.similar.filter(function(item) {
+            return __iced_k(_this.parent != null ? (self = _this, _this.children = _this.children.filter(function(item) {
               return item.song.mbid !== self.parent.song.mbid;
             })) : void 0);
           });

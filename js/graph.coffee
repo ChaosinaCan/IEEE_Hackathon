@@ -7,11 +7,7 @@ class root.SongData
 	title: null
 	artist: null
 	album: null
-	gs:
-		found: false
-		url: null
-		id: null
-	
+	gs: {}
 
 	loaded: false
 	error: false
@@ -20,6 +16,10 @@ class root.SongData
 		this.title = title
 		this.artist = artist
 		this.album = null
+		this.gs = 
+			found: false
+			url: null
+			id: null
 		
 	checkLastFM: (callback) =>
 		lastfm.track.getInfo
@@ -75,7 +75,7 @@ class root.SongNode
 	parent: null
 	song: null
 	expanded: false
-	similar: []
+	children: []
 
 	constructor: (songdata, parent) ->
 		this.song = songdata
@@ -85,13 +85,13 @@ class root.SongNode
 		if not this.expanded
 			items = []
 			await this.song.getSimilar defer items
-			this.similar = (new SongNode(item, this) for item in items)
+			this.children = (new SongNode(item, this) for item in items)
 		
 			# filter out items that are the same as this node's parent so
 			# we don't toggle between two similar songs indefinitely
 			if this.parent?
 				self = this
-				this.similar = this.similar.filter (item) ->
+				this.children = this.children.filter (item) ->
 					return item.song.mbid != self.parent.song.mbid
 
 		this.expanded = true

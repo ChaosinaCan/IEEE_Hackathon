@@ -1,6 +1,7 @@
 root = exports ? this
 
 root.gs = new GrooveShark '67b088cec7b78a5b29a42a7124928c87'
+gs.open()
 
 root.lastfm = new LastFM
 	apiKey: '6e9f1f13f07ba5bcbfb0a8951811c80e'
@@ -75,28 +76,33 @@ class root.TrackFinder
 		
 $ ->
 	rootlist = $('<ul>')
-	$(document.body).append(rootlist)
+	$('#content').append(rootlist)
 
 	# I have no idea what this does any more
 	insertSongNode = (node, list) ->
 		item = $('<li>')
 		item.append(
-			$('<a href="#">').text("#{node.song.title} - #{node.song.artist}")
+			$('<a href="javascript:;">').text("#{node.song.title} - #{node.song.artist}")
 				.attr('title', node.song.mbid)
 				.click( ->
 					if node.expanded
 						return
 					node.expand (expanded) ->
-						if expanded.similar.length == 0
+						if expanded.children.length == 0
 							$(item).children('ul').append($('<li>').text('No similar songs'))
-						for similar in expanded.similar
-							insertSongNode(similar, $(item).children('ul'))	
+						for child in expanded.children
+							insertSongNode(child, $(item).children('ul'))	
 				)
 		)
 		if node.song.gs.url?
 			item.append(' - ')
 			item.append(
-				$('<a target=_blank>').attr('href', node.song.gs.url).text('Play')	
+				$('<a>').text('Play')
+					.attr('href', node.song.gs.url)
+					.click( (e) -> 
+						gs.changeSong(node.song.gs.url)
+						e.preventDefault()
+					)
 			)
 		item.append($('<ul>'))
 		list.append(item)
