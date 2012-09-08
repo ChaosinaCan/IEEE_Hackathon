@@ -31,14 +31,16 @@
 
   root.TrackFinder = (function() {
 
-    function TrackFinder() {
+    TrackFinder.defaultLimit = 5;
+
+    TrackFinder.prototype.limit = null;
+
+    function TrackFinder(limit) {
       this.find = __bind(this.find, this);
 
       this.findById = __bind(this.findById, this);
-
+      this.limit = limit != null ? limit : TrackFinder.defaultLimit;
     }
-
-    TrackFinder.prototype.limit = 10;
 
     TrackFinder.prototype.findById = function(mbid, callback) {
       var _this = this;
@@ -91,19 +93,5 @@
     return TrackFinder;
 
   })();
-
-  $(function() {
-    var f;
-    f = new TrackFinder;
-    return f.find('Eye of the Tiger', 'Survivor', function(data) {
-      if ('error' in data) {
-        console.log("Got Error " + data.error);
-        return console.log(data.message);
-      } else {
-        console.log('Got Response');
-        return console.log(data.track);
-      }
-    });
-  });
 
 }).call(this);

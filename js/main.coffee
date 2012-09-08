@@ -25,8 +25,12 @@ root.lastfm.error =
 
 
 class root.TrackFinder
-	limit: 10
+	@defaultLimit: 5
+	limit: null
 		
+	constructor: (limit) ->
+		this.limit = limit ? TrackFinder.defaultLimit
+
 	findById: (mbid, callback) =>
 		lastfm.track.getSimilar
 			mbid: mbid
@@ -67,15 +71,5 @@ class root.TrackFinder
 
 
 
-$ ->
-	f = new TrackFinder
-	
-	f.find 'Eye of the Tiger', 'Survivor', (data) ->
-		if 'error' of data
-			console.log "Got Error #{data.error}"
-			console.log data.message
-		else
-			console.log 'Got Response'
-			console.log data.track
 
 		

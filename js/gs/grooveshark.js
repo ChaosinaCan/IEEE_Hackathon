@@ -19,7 +19,6 @@
     GrooveShark.prototype.query = function(query, callback, errback) {
       var url;
       url = encodeURI(GrooveShark.endpoint + ("?query=" + query));
-      console.log(url);
       return $.getJSON(url).then(callback, errback);
     };
 
