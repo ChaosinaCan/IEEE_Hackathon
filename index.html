@@ -16,22 +16,26 @@
 </head>
 <body>
 
-	<header>
-		<h1 class="outline center">Song Tree // Music Discovery with a Choice</h1>
-	</header>
+	<h1 class="outline center">Song Tree // Music Discovery with a Choice</h1>
       
-	<div id="content">
-		<form id="search-form" class="center">
-			<label for="search-song" class="outline">Search for a song:</label>
-			<input type="text" id="search-song" placeholder="SONG">
-			<input type="text" id="search-artist" placeholder="ARTIST">
-			<input type="submit" value="Search" id="search-submit">
-			<div class="loader"></div>
-		</form>
+	<form id="search-form" class="center">
+		<label for="search-song" class="outline">Search for a song:</label>
+		<input type="text" id="search-song" placeholder="SONG NAME">
+		<input type="text" id="search-artist" placeholder="ARTIST">
+		<input type="submit" value="Search" id="search-submit">
+		<div class="loader"></div>
+	</form>
 		
+	<section>
+		<h3>Search Results</h3>
 		<div id="search-results"></div>
+	</section>
+	
+	<section>
+		<h3>Similar Songs</h3>
 		<div id="tree"></div>
-	</div>
+	</section>
+	
 
 	<footer>
 		<p>By Joel Spadin, Tim Park and Matt Johnson</p>

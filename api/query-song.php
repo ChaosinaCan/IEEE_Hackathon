@@ -2,7 +2,7 @@
 
 	require_once 'tinysong.php';
 	
-	$api_key = 'd9ec40ec6e1913c6904b99fcf469bbcd';
+	$api_key = '121900a05afcb2d386f0959aac76304b';
 	
 	$query = $_GET['query'];
 	

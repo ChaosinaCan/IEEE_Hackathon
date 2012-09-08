@@ -192,7 +192,7 @@
 
   root.SongNode = (function() {
 
-    SongNode.maxChildren = 4;
+    SongNode.maxChildren = 5;
 
     SongNode.prototype.parent = null;
 

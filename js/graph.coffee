@@ -77,7 +77,7 @@ class root.SongData
 			callback?(items)
 
 class root.SongNode
-	@maxChildren: 4
+	@maxChildren: 5
 
 	parent: null
 	song: null

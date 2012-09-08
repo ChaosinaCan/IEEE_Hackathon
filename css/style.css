@@ -1,5 +1,9 @@
-﻿body {
-	font: normal normal normal 16px/18px 
+﻿html {
+	background: #fa7900;
+}
+
+body {
+	font: normal normal normal 16px/20px 
 		'HelveticaNeue-Light', 
 		'Helvetica Neue Light', 
 		'Helvetica Neue', 
@@ -7,7 +11,45 @@
 		'Arial', 
 		'Lucida Grande', 
 		sans-serif;
+
+	max-width: 1000px;
+	margin: 10px auto;
+	padding: 10px 50px;
+
+	border-top: 20px solid #000;
+	box-shadow: 0 0 12px rgba(0,0,0, 0.2);
+	background: #fff url(img/background.png?1) center bottom no-repeat;
 }
+
+h1, h3, p, ul {
+	margin: 20px 0;
+}
+
+ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+ul ul {
+	padding-left: 20px;
+}
+
+h1 {
+    color: #f90;
+	font-size: 36px;
+	line-height: 40px;
+	font-weight: bold;
+}
+
+footer {
+	margin-top: 40px;
+	text-align: center;
+}
+
+footer p {
+	margin-bottom: 0;
+}
+
 
 .outline {
 	text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
@@ -19,37 +61,24 @@
 }
 
 
-header {
-	padding: 10px;
-
-    border: 2px solid gray;
-	border-radius: 15px;
-
-	background-color: #f90;
-    color: white;
-	font-weight: bold;
-}
-
-#content {
-	max-width: 1000px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-footer {
-	text-align: center;
-}
-
 #search-form {
-	margin-top: 10px;
+	margin: 10px -10px 0;
 	padding: 10px;
 
 	border: 2px solid gray;
-	border-radius: 15px;
+	border-radius: 8px;
 
 	background-color: #f90;
 	color: #fff;
     font-size: 20px;
+}
+
+#search-form label {
+	vertical-align: baseline;
+}
+
+#search-form input {
+	padding: 4px;
 }
 
 #search-form .loader {
@@ -60,7 +89,7 @@ footer {
 }
 
 #search-form.working .loader {
-	background: url('img/loader-orange.gif') center no-repeat;
+	background: url(img/loader-orange.gif) center no-repeat;
 }
 
 
@@ -72,6 +101,37 @@ a[href]:hover {
 	text-decoration: underline;
 }
 
-#tree .working {
-	color: red;
+#tree .working > a:first-of-type {
+	color: #888;
+}
+
+#tree .working > a:first-of-type:after {
+	content: ' ';
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-left: 10px;
+	vertical-align: middle;
+
+	background: url(img/loader-song.gif) center no-repeat;
+}
+
+#tree a.play {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-left: 10px;
+	vertical-align: middle;
+
+	background: url(img/play.png) center no-repeat;
+}
+
+#tree a.play:hover {
+	background-image: url(img/play-hover.png);
+}
+
+#tree li > ul {
+	margin: 0;
+	border-left: 7px solid #eaeaea;
+	padding-left: 33px;
 }

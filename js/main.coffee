@@ -3,7 +3,7 @@
 root = exports ? this
 
 root.gs = new GrooveShark '67b088cec7b78a5b29a42a7124928c87'
-gs.open()
+#gs.open()
 
 root.lastfm = new LastFM
 	apiKey: '6e9f1f13f07ba5bcbfb0a8951811c80e'
@@ -35,7 +35,10 @@ root.lastfm.search = (title, artist, callback) ->
 
 	lastfm.track.search query, 
 		success: (data) ->
-			tempresults = (SongData.fromLastFM(track) for track in data.results.trackmatches.track)
+			if typeof data.results.trackmatches == 'object'
+				tempresults = (SongData.fromLastFM(track) for track in data.results.trackmatches.track)
+			else
+				tempresults = []
 			results = []
 			for track, i in tempresults
 				await track.checkGrooveShark defer results[i]
@@ -49,7 +52,7 @@ root.lastfm.search = (title, artist, callback) ->
 
 
 class root.TrackFinder
-	@defaultLimit: 7
+	@defaultLimit: 6
 	limit: null
 		
 	constructor: (limit) ->
@@ -117,7 +120,7 @@ beginTree = (songdata) ->
 	insertSongNode = (node, list) ->
 		item = $('<li>')
 		item.append(
-			$('<a href="javascript:;">').text("#{node.song.title} - #{node.song.artist}")
+			$('<a href="javascript:;">').text("#{node.song.title} – #{node.song.artist}")
 				.attr('title', node.song.mbid)
 				.click( -> 
 					$(this).removeAttr('href')
@@ -125,9 +128,8 @@ beginTree = (songdata) ->
 				)
 		)
 		if node.song.gs.url?
-			item.append(' - ')
 			item.append(
-				$('<a>').text('Play')
+				$('<a class=play>')
 					.attr('href', node.song.gs.url)
 					.click( (e) -> 
 						gs.changeSong(node.song.gs.url)
@@ -142,7 +144,6 @@ beginTree = (songdata) ->
 	insertSongNode(rootnode, rootlist)
 
 	doExpand(rootnode, rootlist.children('li'))
-	rootlist.children('a').removeAttr('href')
 
 
 
@@ -156,6 +157,7 @@ $ ->
 		$(this).attr('disabled', true)
 		$('#search-form').addClass('working')
 		
+		results = []
 		await lastfm.search $('#search-song').val(), $('#search-artist').val(), defer results
 
 		container = $('#search-results').empty()
@@ -167,7 +169,7 @@ $ ->
 				do (track) ->
 					list.append(
 						$('<li>').append(
-							$('<a href="javascript:;">').text("#{track.title} - #{track.artist}")
+							$('<a href="javascript:;">').text("#{track.title} – #{track.artist}")
 								.click( -> selectResult(track))
 						)
 					)

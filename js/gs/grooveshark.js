@@ -35,7 +35,11 @@
     };
 
     GrooveShark.prototype.changeSong = function(url) {
-      return this.window.location.assign(url);
+      if (this.window != null) {
+        return this.window.location.assign(url);
+      } else {
+        return this.window = window.open(url);
+      }
     };
 
     return GrooveShark;

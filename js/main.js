@@ -44,8 +44,6 @@
 
   root.gs = new GrooveShark('67b088cec7b78a5b29a42a7124928c87');
 
-  gs.open();
-
   root.lastfm = new LastFM({
     apiKey: '6e9f1f13f07ba5bcbfb0a8951811c80e',
     apiSecret: '4db7199ede1a06b27e6fd96705ddba49'
@@ -82,16 +80,20 @@
           _this = this;
         __iced_k = __iced_k_noop;
         ___iced_passed_deferral = iced.findDeferral(arguments);
-        tempresults = (function() {
-          var _i, _len, _ref, _results;
-          _ref = data.results.trackmatches.track;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            track = _ref[_i];
-            _results.push(SongData.fromLastFM(track));
-          }
-          return _results;
-        })();
+        if (typeof data.results.trackmatches === 'object') {
+          tempresults = (function() {
+            var _i, _len, _ref, _results;
+            _ref = data.results.trackmatches.track;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              track = _ref[_i];
+              _results.push(SongData.fromLastFM(track));
+            }
+            return _results;
+          })();
+        } else {
+          tempresults = [];
+        }
         results = [];
         (function(__iced_k) {
           var _i, _len, _ref, _results, _while;
@@ -127,7 +129,7 @@
                       return __slot_1[__slot_2] = arguments[0];
                     };
                   })(results, i),
-                  lineno: 42
+                  lineno: 45
                 }));
                 __iced_deferrals._fulfill();
               })(_next);
@@ -147,7 +149,7 @@
 
   root.TrackFinder = (function() {
 
-    TrackFinder.defaultLimit = 7;
+    TrackFinder.defaultLimit = 6;
 
     TrackFinder.prototype.limit = null;
 
@@ -236,13 +238,12 @@
     insertSongNode = function(node, list) {
       var item;
       item = $('<li>');
-      item.append($('<a href="javascript:;">').text("" + node.song.title + " - " + node.song.artist).attr('title', node.song.mbid).click(function() {
+      item.append($('<a href="javascript:;">').text("" + node.song.title + " – " + node.song.artist).attr('title', node.song.mbid).click(function() {
         $(this).removeAttr('href');
         return doExpand(node, item);
       }));
       if (node.song.gs.url != null) {
-        item.append(' - ');
-        item.append($('<a>').text('Play').attr('href', node.song.gs.url).click(function(e) {
+        item.append($('<a class=play>').attr('href', node.song.gs.url).click(function(e) {
           gs.changeSong(node.song.gs.url);
           return e.preventDefault();
         }));
@@ -253,8 +254,7 @@
     };
     root.rootnode = new SongNode(songdata);
     insertSongNode(rootnode, rootlist);
-    doExpand(rootnode, rootlist.children('li'));
-    return rootlist.children('a').removeAttr('href');
+    return doExpand(rootnode, rootlist.children('li'));
   };
 
   $(function() {
@@ -271,6 +271,7 @@
       e.preventDefault();
       $(this).attr('disabled', true);
       $('#search-form').addClass('working');
+      results = [];
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral
@@ -281,7 +282,7 @@
               return results = arguments[0];
             };
           })(),
-          lineno: 160
+          lineno: 162
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -292,7 +293,7 @@
         } else {
           list = $('<ul>');
           _fn = function(track) {
-            return list.append($('<li>').append($('<a href="javascript:;">').text("" + track.title + " - " + track.artist).click(function() {
+            return list.append($('<li>').append($('<a href="javascript:;">').text("" + track.title + " – " + track.artist).click(function() {
               return selectResult(track);
             })));
           };

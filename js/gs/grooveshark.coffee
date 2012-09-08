@@ -22,4 +22,7 @@ class root.GrooveShark
 		window.focus()
 
 	changeSong: (url) ->
-		this.window.location.assign(url)
+		if this.window?
+			this.window.location.assign(url)
+		else
+			this.window = window.open(url)
