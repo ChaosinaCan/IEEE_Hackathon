@@ -40,6 +40,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+*.mswwsettings
 
 # Build results
 [Dd]ebug/
