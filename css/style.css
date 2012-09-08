@@ -18,7 +18,7 @@ body {
 
 	border-top: 20px solid #000;
 	box-shadow: 0 0 12px rgba(0,0,0, 0.2);
-	background: #fff url(img/background.png?1) center bottom no-repeat;
+	background: #fff url(img/background.png) center bottom no-repeat;
 }
 
 h1, h3, p, ul {
