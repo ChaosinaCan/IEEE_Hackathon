@@ -2,3 +2,7 @@ Last.fm
 
 API Key: 6e9f1f13f07ba5bcbfb0a8951811c80e
 Secret: is 4db7199ede1a06b27e6fd96705ddba49
+
+Tinysong
+
+67b088cec7b78a5b29a42a7124928c87
