@@ -14,11 +14,22 @@
 	<title>Hackathon Project</title>
 </head>
 <body>
-	<header>
-		<h1>IEEE Hackathon Music Discoverer</h1>
-	</header>
 
-	<div id="content">
+	<div class="header">
+		<center><h1>Song Tree // Music Discovery with a Choice</h1></center>
+	</div>
+       
+    <div class="search"><center>
+    <form>
+	<label for="song-search-input">Search for a song:&nbsp;</label>
+	<input type="text" id="song-search-input" name="song-search-input" placeholder=" SONG">
+	<input type="text" id="artist-search-input" name="artist-search-input" placeholder=" ARTIST">
+	<input type="submit" value="Search" class="search-song">
+	</form>
+	</center></div>
+	
+	<div class="results" id="search-results"></div>
+	<div class="tree" id="content">
 
 	</div>
 

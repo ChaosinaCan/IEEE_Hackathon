@@ -1,1 +1,31 @@
-﻿
+﻿.header{
+    background-color: #ff9900;
+    border: 2px solid gray;
+    color: white;
+    padding: 10px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
+    text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
+                -0.05em 0.00em #444, 0.00em -0.05em #444;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.search{
+    font-size:20px;
+    margin-top: 10px;
+    background-color: #ff9900;
+    border: 2px solid gray;
+    color: white;
+    padding: 10px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
+    text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
+                -0.05em 0.00em #444, 0.00em -0.05em #444;
+    -moz-border-radius: 15px;
+    border-radius: 15px; 
+}
+
+.tree{
+    
+}
