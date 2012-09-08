@@ -1,36 +1,77 @@
-﻿.header{
-    background-color: #ff9900;
-    border: 2px solid gray;
-    color: white;
-    padding: 10px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-    font-weight: 300;
-    text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
+﻿body {
+	font: normal normal normal 16px/18px 
+		'HelveticaNeue-Light', 
+		'Helvetica Neue Light', 
+		'Helvetica Neue', 
+		'Helvetica', 
+		'Arial', 
+		'Lucida Grande', 
+		sans-serif;
+}
+
+.outline {
+	text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
                 -0.05em 0.00em #444, 0.00em -0.05em #444;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
 }
 
-.search{
-    font-size:20px;
-    margin-top: 10px;
-    background-color: #ff9900;
+.center {
+	text-align: center;
+}
+
+
+header {
+	padding: 10px;
+
     border: 2px solid gray;
+	border-radius: 15px;
+
+	background-color: #f90;
     color: white;
-    padding: 10px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-    font-weight: 300;
-    text-shadow: 0.05em 0.00em #444, 0.00em  0.05em #444,
-                -0.05em 0.00em #444, 0.00em -0.05em #444;
-    -moz-border-radius: 15px;
-    border-radius: 15px; 
+	font-weight: bold;
 }
 
-.tree{
-    
+#content {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+footer {
+	text-align: center;
+}
+
+#search-form {
+	margin-top: 10px;
+	padding: 10px;
+
+	border: 2px solid gray;
+	border-radius: 15px;
+
+	background-color: #f90;
+	color: #fff;
+    font-size: 20px;
+}
+
+#search-form .loader {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	margin: -7px 0;
+}
+
+#search-form.working .loader {
+	background: url('img/loader-orange.gif') center no-repeat;
 }
 
 
-.working {
+a {
+	text-decoration: none;
+}
+
+a[href]:hover {
+	text-decoration: underline;
+}
+
+#tree .working {
 	color: red;
 }

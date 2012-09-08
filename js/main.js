@@ -1,5 +1,5 @@
 (function() {
-  var iced, root, __iced_k, __iced_k_noop,
+  var beginTree, iced, root, __iced_k, __iced_k_noop,
     __slice = [].slice,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -210,13 +210,10 @@
 
   })();
 
-  $(function() {
-    var doExpand, insertSongNode, rootlist, unused, ___iced_passed_deferral, __iced_deferrals, __iced_k,
-      _this = this;
-    __iced_k = __iced_k_noop;
-    ___iced_passed_deferral = iced.findDeferral(arguments);
+  beginTree = function(songdata) {
+    var doExpand, insertSongNode, rootlist;
     rootlist = $('<ul>');
-    $('#content').append(rootlist);
+    $('#tree').empty().append(rootlist);
     doExpand = function(node, li) {
       if (node._clicked != null) return;
       node._clicked = true;
@@ -254,36 +251,59 @@
       list.append(item);
       return item;
     };
-    root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'));
-    (function(__iced_k) {
-      __iced_deferrals = new iced.Deferrals(__iced_k, {
-        parent: ___iced_passed_deferral
-      });
-      rootnode.song.checkGrooveShark(__iced_deferrals.defer({
-        assign_fn: (function() {
-          return function() {
-            return unused = arguments[0];
-          };
-        })(),
-        lineno: 142
-      }));
-      __iced_deferrals._fulfill();
-    })(function() {
+    root.rootnode = new SongNode(songdata);
+    insertSongNode(rootnode, rootlist);
+    doExpand(rootnode, rootlist.children('li'));
+    return rootlist.children('a').removeAttr('href');
+  };
+
+  $(function() {
+    var selectResult;
+    selectResult = function(track) {
+      beginTree(track);
+      return $('#search-results').empty();
+    };
+    return $('#search-submit').click(function(e) {
+      var container, list, results, track, ___iced_passed_deferral, __iced_deferrals, __iced_k,
+        _this = this;
+      __iced_k = __iced_k_noop;
+      ___iced_passed_deferral = iced.findDeferral(arguments);
+      e.preventDefault();
+      $(this).attr('disabled', true);
+      $('#search-form').addClass('working');
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral
         });
-        rootnode.song.checkLastFM(__iced_deferrals.defer({
+        lastfm.search($('#search-song').val(), $('#search-artist').val(), __iced_deferrals.defer({
           assign_fn: (function() {
             return function() {
-              return unused = arguments[0];
+              return results = arguments[0];
             };
           })(),
-          lineno: 143
+          lineno: 160
         }));
         __iced_deferrals._fulfill();
       })(function() {
-        return insertSongNode(rootnode, rootlist);
+        var _fn, _i, _len;
+        container = $('#search-results').empty();
+        if (results.length === 0) {
+          container.append($('<p>').text('No songs found'));
+        } else {
+          list = $('<ul>');
+          _fn = function(track) {
+            return list.append($('<li>').append($('<a href="javascript:;">').text("" + track.title + " - " + track.artist).click(function() {
+              return selectResult(track);
+            })));
+          };
+          for (_i = 0, _len = results.length; _i < _len; _i++) {
+            track = results[_i];
+            _fn(track);
+          }
+          container.append(list);
+        }
+        $(_this).removeAttr('disabled');
+        return $('#search-form').removeClass('working');
       });
     });
   });

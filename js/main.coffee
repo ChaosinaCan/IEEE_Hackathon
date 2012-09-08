@@ -94,9 +94,9 @@ class root.TrackFinder
 
 
 		
-$ ->
+beginTree = (songdata) ->
 	rootlist = $('<ul>')
-	$('#content').append(rootlist)
+	$('#tree').empty().append(rootlist)
 
 	doExpand = (node, li) -> 
 		if node._clicked?
@@ -138,11 +138,43 @@ $ ->
 		list.append(item)
 		return item
 
-	root.rootnode = new SongNode(new SongData('Eye of the Tiger', 'Survivor'))
-	await rootnode.song.checkGrooveShark defer unused
-	await rootnode.song.checkLastFM defer unused
+	root.rootnode = new SongNode(songdata)
 	insertSongNode(rootnode, rootlist)
 
-		
+	doExpand(rootnode, rootlist.children('li'))
+	rootlist.children('a').removeAttr('href')
 
+
+
+$ ->
+	selectResult = (track) ->
+		beginTree(track)
+		$('#search-results').empty()
+	
+	$('#search-submit').click (e)->
+		e.preventDefault()
+		$(this).attr('disabled', true)
+		$('#search-form').addClass('working')
 		
+		await lastfm.search $('#search-song').val(), $('#search-artist').val(), defer results
+
+		container = $('#search-results').empty()
+		if results.length == 0
+			container.append($('<p>').text('No songs found'))
+		else
+			list = $('<ul>')
+			for track in results
+				do (track) ->
+					list.append(
+						$('<li>').append(
+							$('<a href="javascript:;">').text("#{track.title} - #{track.artist}")
+								.click( -> selectResult(track))
+						)
+					)
+
+			container.append(list)
+
+		$(this).removeAttr('disabled')
+		$('#search-form').removeClass('working')
+
+				
